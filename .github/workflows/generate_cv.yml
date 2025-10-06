@@ -1,0 +1,55 @@
+name: Generate CV PDF
+
+on:
+  push:
+    paths:
+      - 'job_request.txt'   # triggers when JD changes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install openai reportlab
+
+      - name: Run CV Generator
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          echo "Generating tailored CV..."
+          python <<'EOF'
+          import openai, os
+
+          openai.api_key = os.getenv("OPENAI_API_KEY")
+
+          jd = open("job_request.txt").read()
+          base_cv = open("cv-template.tex").read()
+
+          prompt = f"Tailor the following LaTeX CV based on this job description:\n\n{jd}\n\nHere is the base CV:\n{base_cv}\n\nReturn LaTeX only."
+          response = openai.ChatCompletion.create(
+              model="gpt-4o-mini",
+              messages=[{"role": "user", "content": prompt}]
+          )
+
+          tailored_cv = response['choices'][0]['message']['content']
+          with open("generated_cv.tex", "w") as f:
+              f.write(tailored_cv)
+          EOF
+
+      - name: Commit result
+        run: |
+          git config user.name "cv-bot"
+          git config user.email "cv-bot@github.com"
+          git add generated_cv.tex
+          git commit -m "Tailored CV generated"
+          git push
