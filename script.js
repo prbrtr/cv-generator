@@ -1,27 +1,39 @@
 async function submitJD() {
-  const jd = document.getElementById("jd").value;
+  const token = document.getElementById("token").value.trim();
+  const jd = document.getElementById("jd").value.trim();
+  const status = document.getElementById("status");
 
-  // Save JD to job_request.txt in repo using GitHub API
-  const token = prompt("Enter your GitHub personal access token:");
+  if (!token || !jd) {
+    status.textContent = "❌ Please enter both API key and JD.";
+    return;
+  }
 
-  const url = "https://api.github.com/repos/prbrtr/cv-generator/contents/job_request.txt";
-  const content = btoa(jd); // encode JD
+  status.textContent = "⏳ Submitting job description...";
 
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Authorization": `token ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: "New job description update",
-      content: content,
-    }),
-  });
+  const content = new Blob([jd], { type: "text/plain" });
+  const formData = new FormData();
+  formData.append("content", content);
 
-  if (res.ok) {
-    alert("✅ Job description submitted! Wait 1–2 mins, your CV will be generated in repo.");
-  } else {
-    alert("❌ Error: Check token permissions.");
+  // Commit JD to repo to trigger workflow
+  try {
+    await fetch(
+      "https://api.github.com/repos/prbrtr/cv-generator/contents/job_request.txt",
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "New JD submission",
+          content: btoa(jd),
+        }),
+      }
+    );
+    status.textContent =
+      "✅ Submitted! Wait ~30s and check Actions tab for your generated PDF.";
+  } catch (err) {
+    console.error(err);
+    status.textContent = "❌ Error submitting JD. Check token and repo access.";
   }
 }
