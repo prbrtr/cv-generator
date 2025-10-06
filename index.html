@@ -1,96 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>CV Generator</title>
-    <style>
-        body { font-family: Arial; padding: 40px; max-width: 700px; margin: auto; }
-        input, textarea { width: 100%; margin-bottom: 20px; padding: 10px; font-size: 16px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-        .status { margin-top: 20px; }
-        a.download-btn { display: inline-block; margin-top: 20px; padding: 10px 15px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
-    </style>
+  <title>Automated CV Generator</title>
 </head>
 <body>
-    <h1>Automated CV Generator</h1>
-
-    <label for="tokenInput">GitHub Personal Access Token:</label>
-    <input type="password" id="tokenInput" placeholder="Enter your GitHub token">
-
-    <label for="jdInput">Job Description:</label>
-    <textarea id="jdInput" placeholder="Enter job description here..."></textarea>
-
-    <button onclick="submitJD()">Generate PDF</button>
-    <div class="status" id="status"></div>
-    <div id="downloadLink"></div>
-
-    <script>
-        const repoOwner = "YOUR_GITHUB_USERNAME";
-        const repoName = "cv-generator";
-        const branch = "main";
-        const pdfPath = "tailored_cv.pdf";
-
-        async function submitJD() {
-            const token = document.getElementById("tokenInput").value.trim();
-            const jd = document.getElementById("jdInput").value.trim();
-
-            if (!token || !jd) { 
-                alert("Both GitHub token and Job Description are required."); 
-                return; 
-            }
-
-            document.getElementById("status").innerText = "Submitting JD...";
-            document.getElementById("downloadLink").innerHTML = "";
-
-            const content = btoa(unescape(encodeURIComponent(jd)));
-            const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/jd.txt`;
-
-            // Get SHA if exists
-            let sha = null;
-            const getResp = await fetch(url, { headers: { Authorization: `token ${token}` } });
-            if (getResp.ok) {
-                const data = await getResp.json();
-                sha = data.sha;
-            }
-
-            // Push JD.txt
-            const resp = await fetch(url, {
-                method: "PUT",
-                headers: {
-                    Authorization: `token ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: "Update JD", content: content, branch: branch, sha: sha })
-            });
-
-            if (resp.ok) {
-                document.getElementById("status").innerText = "JD submitted! Waiting for PDF to be generated...";
-                pollPDF(token);
-            } else {
-                document.getElementById("status").innerText = "Error submitting JD. Check token and permissions.";
-            }
-        }
-
-        async function pollPDF(token) {
-            const pdfUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pdfPath}`;
-            let tries = 0;
-
-            const interval = setInterval(async () => {
-                tries++;
-                const resp = await fetch(pdfUrl, { headers: { Authorization: `token ${token}` } });
-
-                if (resp.ok) {
-                    const data = await resp.json();
-                    const downloadLink = data.download_url;
-                    document.getElementById("status").innerText = "PDF is ready!";
-                    document.getElementById("downloadLink").innerHTML = `<a href="${downloadLink}" target="_blank" class="download-btn">Download CV PDF</a>`;
-                    clearInterval(interval);
-                } else if (tries > 20) { // Timeout after ~2 min
-                    document.getElementById("status").innerText = "PDF not ready yet. Please check the repo later.";
-                    clearInterval(interval);
-                }
-            }, 6000); // Check every 6 seconds
-        }
-    </script>
+  <h2>Tailor your CV</h2>
+  <textarea id="jd" rows="6" cols="50" placeholder="Paste Job Description here"></textarea><br>
+  <button onclick="submitJD()">Generate CV</button>
+  <script src="script.js"></script>
 </body>
 </html>
