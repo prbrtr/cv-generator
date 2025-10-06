@@ -1,33 +1,42 @@
-import openai
 import os
+from openai import OpenAI
+import subprocess
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-with open("base_cv.tex", "r") as f:
-    base_cv = f.read()
+# Read the job description
+with open("job_request.txt", "r", encoding="utf-8") as f:
+    jd = f.read().strip()
 
-with open("jd.txt", "r") as f:
-    jd = f.read()
+print("Generating CV from JD...")
 
+# Generate tailored CV text in LaTeX
 prompt = f"""
-You are an expert resume writer.
-Tailor the following LaTeX CV to match the job description.
-Keep formatting consistent and output valid LaTeX.
-
-Base CV:
-{base_cv}
+You are a professional CV writer.
+Use the following job description to tailor a 1-page CV in LaTeX format.
 
 Job Description:
 {jd}
+
+Make it ATS-friendly, concise, and professional.
+Return only valid LaTeX code (no explanations).
 """
 
-response = openai.Completion.create(
-    model="gpt-4o-mini",
-    prompt=prompt,
-    max_tokens=2000
+response = client.responses.create(
+    model="gpt-4.1-mini",
+    input=prompt
 )
 
-tailored_cv = response.choices[0].text.strip()
+cv_latex = response.output_text
 
-with open("tailored_cv.tex", "w") as f:
-    f.write(tailored_cv)
+# Save as cv-template.tex and compile
+with open("cv-template.tex", "w", encoding="utf-8") as f:
+    f.write(cv_latex)
+
+# Compile LaTeX to PDF
+subprocess.run(["pdflatex", "cv-template.tex"], check=True)
+
+# Rename output
+os.rename("cv-template.pdf", "output.pdf")
+
+print("✅ CV generated successfully as output.pdf")
