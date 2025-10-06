@@ -1,12 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Automated CV Generator</title>
 </head>
 <body>
-  <h2>Tailor your CV</h2>
-  <textarea id="jd" rows="6" cols="50" placeholder="Paste Job Description here"></textarea><br>
+  <h2>Automated CV Generator</h2>
+  <label>OpenAI API Key:</label><br>
+  <input type="password" id="token" placeholder="Enter your API key"><br><br>
+
+  <label>Job Description:</label><br>
+  <textarea id="jd" rows="6" cols="60" placeholder="Paste job description..."></textarea><br><br>
+
   <button onclick="submitJD()">Generate CV</button>
+
+  <p id="status"></p>
+
   <script src="script.js"></script>
 </body>
 </html>
