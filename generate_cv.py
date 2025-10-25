@@ -37,7 +37,8 @@ response = client.chat.completions.create(
 cv_latex = response.choices[0].message.content
 
 # Clean up markdown code fences if present
-if cv_latex.startswith("```
+triple_backtick = "```"
+if cv_latex.startswith(triple_backtick): 
     cv_latex = cv_latex.split("```")[1]
     if cv_latex.startswith("latex\n"):
         cv_latex = cv_latex[6:]
@@ -68,3 +69,4 @@ except subprocess.CalledProcessError as e:
     print(e.stderr.decode() if e.stderr else "")
 except FileNotFoundError:
     print("❌ pdflatex not found. Make sure LaTeX is installed.")
+
