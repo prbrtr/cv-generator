@@ -1,22 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Automated CV Generator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated CV Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h2>Automated CV Generator</h2>
-  <label>OpenAI API Key:</label><br>
-  <input type="password" id="token" placeholder="Enter your API key"><br><br>
+    <h1>🎯 Automated CV Generator</h1>
+    
+    <div class="instructions">
+        <strong>How it works:</strong>
+        <ol>
+            <li>Paste the complete job description below</li>
+            <li>Click "Generate CV"</li>
+            <li>Wait ~30-60 seconds</li>
+            <li>Check the <a href="https://github.com/prbrtr/cv-generator/actions" target="_blank">Actions tab</a> for your PDF</li>
+        </ol>
+    </div>
 
-  <label>Job Description:</label><br>
-  <textarea id="jd" rows="6" cols="60" placeholder="Paste job description..."></textarea><br><br>
+    <label for="jd"><strong>Job Description:</strong></label>
+    <textarea id="jd" placeholder="Paste the complete job description here..."></textarea>
+    
+    <button onclick="submitJD()">Generate CV</button>
+    
+    <div id="status"></div>
 
-  <button onclick="submitJD()">Generate CV</button>
-
-  <p id="status"></p>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
