@@ -10,61 +10,113 @@
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         h1 {
             color: #333;
+            margin-top: 0;
         }
-        textarea {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="password"], textarea {
             width: 100%;
-            min-height: 200px;
             padding: 10px;
-            margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 200px;
+            resize: vertical;
         }
         button {
             background-color: #28a745;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            width: 100%;
+            font-weight: bold;
         }
         button:hover {
             background-color: #218838;
         }
+        button:active {
+            transform: scale(0.98);
+        }
         #status {
-            margin-top: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
             font-weight: bold;
+            display: none;
+        }
+        #status:not(:empty) {
+            display: block;
         }
         .instructions {
-            background-color: #f8f9fa;
+            background-color: #e7f3ff;
             padding: 15px;
-            border-left: 4px solid #28a745;
-            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        .instructions ol {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        .lock-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>🎯 Automated CV Generator</h1>
-    
-    <div class="instructions">
-        <strong>How it works:</strong>
-        <ol>
-            <li>Paste the complete job description below</li>
-            <li>Click "Generate CV"</li>
-            <li>Wait ~30-60 seconds</li>
-            <li>Check the <a href="https://github.com/prbrtr/cv-generator/actions" target="_blank">Actions tab</a> for your PDF</li>
-        </ol>
-    </div>
+    <div class="container">
+        <div class="lock-icon">🔐</div>
+        <h1>Automated CV Generator</h1>
+        
+        <div class="instructions">
+            <strong>📋 How it works:</strong>
+            <ol>
+                <li>Enter your secret passphrase</li>
+                <li>Paste the complete job description</li>
+                <li>Click "Generate CV"</li>
+                <li>Check the <a href="https://github.com/prbrtr/cv-generator/actions" target="_blank">Actions tab</a> for your PDF (~30-60 seconds)</li>
+            </ol>
+        </div>
 
-    <label for="jd"><strong>Job Description:</strong></label>
-    <textarea id="jd" placeholder="Paste the complete job description here..."></textarea>
-    
-    <button onclick="submitJD()">Generate CV</button>
-    
-    <div id="status"></div>
+        <div class="form-group">
+            <label for="passphrase">🔑 Secret Passphrase:</label>
+            <input type="password" id="passphrase" placeholder="Enter your secret word/phrase">
+        </div>
+
+        <div class="form-group">
+            <label for="jd">📄 Job Description:</label>
+            <textarea id="jd" placeholder="Paste the complete job description here..."></textarea>
+        </div>
+        
+        <button onclick="submitJD()">🚀 Generate CV</button>
+        
+        <div id="status"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
