@@ -1,10 +1,12 @@
 name: Generate CV
 
 on:
-  push:
-    paths:
-      - 'job_request.txt'
   workflow_dispatch:
+    inputs:
+      job_description:
+        description: 'Job Description'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -27,6 +29,10 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install openai
+    
+    - name: Create job description file
+      run: |
+        echo "${{ github.event.inputs.job_description }}" > job_request.txt
         
     - name: Run CV Generator
       env:
@@ -36,13 +42,5 @@ jobs:
     - name: Upload PDF artifact
       uses: actions/upload-artifact@v4
       with:
-        name: generated-cv
+        name: generated-cv-${{ github.run_number }}
         path: output.pdf
-        
-    - name: Commit result
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -f output.pdf || true
-        git commit -m "Add generated CV" || true
-        git push || true
