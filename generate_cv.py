@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 import subprocess
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = client.chat.completions.create()
 
 # Read the job description
 with open("job_request.txt", "r", encoding="utf-8") as f:
@@ -68,3 +68,4 @@ except subprocess.CalledProcessError as e:
     print(e.stderr.decode() if e.stderr else "")
 except FileNotFoundError:
     print("❌ pdflatex not found. Make sure LaTeX is installed.")
+
