@@ -1,6 +1,6 @@
 // Your secret configuration (encrypted with your passphrase)
 const CONFIG = {
-  encryptedToken: 'U2FsdGVkX1+8xYz...', // Will be generated based on your passphrase
+  encryptedToken: 'FQkJLQMBGQULMSwABwkeRg42RlIXGTgdGFY/RhA8MCUyR1VLFlIgKg==', // Will be generated based on your passphrase
   repo: 'prbrtr/cv-generator',
   workflow: 'generate_cv.yml'
 };
