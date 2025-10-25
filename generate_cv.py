@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 import subprocess
 
-client = client.chat.completions.create()
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # Read the job description
 with open("job_request.txt", "r", encoding="utf-8") as f:
@@ -25,7 +25,7 @@ Include standard LaTeX document structure with documentclass, packages, and comp
 
 # Correct OpenAI API call
 response = client.chat.completions.create(
-    model="gpt-4o-mini",  # or use "gpt-3.5-turbo" for lower cost
+    model="gpt-4o-mini",
     messages=[
         {"role": "system", "content": "You are a professional CV writer specializing in ATS-friendly resumes."},
         {"role": "user", "content": prompt}
@@ -68,4 +68,3 @@ except subprocess.CalledProcessError as e:
     print(e.stderr.decode() if e.stderr else "")
 except FileNotFoundError:
     print("❌ pdflatex not found. Make sure LaTeX is installed.")
-
